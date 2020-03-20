@@ -1,14 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useAuth } from '../Login/useAuth';
 
 
 const Cart = (props) => {
     const cart = props.cart;
+
+    const auth = useAuth()
+        console.log(auth);
+    
+
     // const total = cart.reduce((total, prd) => total + prd.price,0)
     let total = 0;
     for(let i =0; i< cart.length; i++){
         const product = cart[i];
-        total = total + product.price;
+        total = total + product.price * product.quantity;
 
     }
 
@@ -23,7 +28,7 @@ const Cart = (props) => {
         shipping = 12.99;
     }
 
-        const tax = (total / 10). toFixed(2);
+        const tax = (total / 10).toFixed(2);
         const grandTotal = (total + shipping + Number(tax)).toFixed(2)
 
     const formatNumber = num => {
@@ -40,10 +45,10 @@ const Cart = (props) => {
         <p><small>Tax: {tax}</small></p>
             <p>Total Price: {grandTotal}</p>
             <br/>
-            <Link to="/manage">
-            <button className="main-button">Review Order</button>
-            </Link>
-            
+            {
+                props.children
+            }
+      
         </div>
     );
 };
