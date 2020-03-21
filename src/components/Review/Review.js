@@ -4,12 +4,15 @@ import fakeData from '../../fakeData/';
 import ReviewItem from '../ReviewItem/ReviewItem';
 import Cart from '../Cart/Cart';
 import happyImage from '../../images/giphy.gif'
+import { Link } from 'react-router-dom';
+import { useAuth } from '../Login/useAuth';
 
 const Review = () => {
 
 
     const [cart, setCart] = useState([]);
     const [orderPlaced, setOrderPlaced] = useState(false);
+    const auth = useAuth();
 
     const handlePlaceOreder = () => {
         
@@ -40,12 +43,12 @@ const Review = () => {
 
    let thankYou;
     if(orderPlaced){
-    thankYou = <img src={happyImage}></img>
+    thankYou = <img src={happyImage} alt=""></img>
     }
     return (
         <div className="twin-container">
             <div className="product-container">
-            <h1>Cart Items : {cart.length}</h1>
+        
            { cart.map(pd => <ReviewItem 
            key={pd.key} RemoveProduct={RemoveProduct}
            product={pd}></ReviewItem>)
@@ -53,12 +56,21 @@ const Review = () => {
         {
             thankYou
         }
+        {
+            !cart.length && <h1>Cart is Empty <a href="/shop">Keep Shoping</a></h1>
+        }
     
            </div>
             
            <div className="cart-container">
                <Cart cart={cart}>
-                   <buttom onClick={handlePlaceOreder} className="main-button">Place Order</buttom>
+                   <Link to="ship">
+                       {
+                           auth.user ? 
+                           <buttom className="main-button">Proceed Checkout</buttom> :
+                           <buttom className="main-button"> Log in to Proceed</buttom>
+                       }
+                       </Link>
                </Cart>
                </div>
            
