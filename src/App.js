@@ -33,7 +33,7 @@ function App(props) {
             <Route path="/review">
               <Review></Review>
             </Route>
-            <Route path="/manage">
+            <Route path="/inventory">
               <Inventory></Inventory>
             </Route>
             <Route exact path="/">
@@ -42,7 +42,7 @@ function App(props) {
             <Route path="/product/:productkey" >
               <ProductDetail></ProductDetail>
             </Route>
-            <Route path="/login">
+            <Route path="/login"> 
               <Login></Login>
             </Route>
             <PrivateRoute path="/ship"> 

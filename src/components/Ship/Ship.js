@@ -2,15 +2,47 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import {  } from './Ship.css'; 
 import { useAuth } from '../Login/useAuth';
+import {loadStripe} from '@stripe/stripe-js';
+import { Elements,} from '@stripe/react-stripe-js';
+import CheckoutForm from '../Checkoutform/CHeckoutForm'
+import { getDatabaseCart, processOrder } from '../../utilities/databaseManager';
 
 const Ship = () => {
     const { register, handleSubmit, errors } = useForm();
-    const onSubmit = data => { console.log(data) }
     const auth = useAuth();
 
+    const stripePromise = loadStripe('pk_test_pS06V8JIFXeKVNV03PxEcd3Y00uNbBWVhq');
+
+    const onSubmit = data => { 
+      // TODO: move this after payment
+      console.log(auth.user.email);
+      const savedCart = getDatabaseCart();
+      const orderDetails = {
+        email: auth.user.email, 
+        cart:savedCart,
+        ship:data,
+      }
+      fetch('http://localhost:4200/placeOrder',{ method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(orderDetails) // body data type must match "Content-Type" header
+    })
+    
+    .then(res=>res.json())
+    .then(order=>{
+      console.log('order placed', order)
+      alert('Successfully placed order with order Id' + order._id)
+      processOrder();
+    })
+  }
     return (
   
-      <form  className="ship-form" onSubmit={handleSubmit(onSubmit)}>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-6">
+            <h3>Shipment Information</h3>
+          <form  className="ship-form" onSubmit={handleSubmit(onSubmit)}>
         <input name="name" defaultValue={auth.user.name} ref={register({ required: true })} placeholder="Your Name" />
         {errors.name && <span className="error">Name is required</span>}
         <input name="email" defaultValue={auth.user.email} ref={register({ required: true })} placeholder="Your Email"/>
@@ -26,6 +58,15 @@ const Ship = () => {
         {errors.zip && <span className="error">zip code is required</span>}
         <input type="submit" />
       </form>
+          </div>
+          <div className="col-md-6">
+          <h3>Payment Information</h3>
+            <Elements stripe={stripePromise}>
+           <CheckoutForm></CheckoutForm>
+           </Elements>
+          </div>
+        </div>
+      </div>
     )
 };
 
