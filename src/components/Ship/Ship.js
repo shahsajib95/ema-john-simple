@@ -4,11 +4,13 @@ import {  } from './Ship.css';
 import { useAuth } from '../Login/useAuth';
 import {loadStripe} from '@stripe/stripe-js';
 import { Elements,} from '@stripe/react-stripe-js';
-import CheckoutForm from '../Checkoutform/CHeckoutForm'
+import CheckoutForm from '../Checkoutform/CheckoutForm'
 import { getDatabaseCart, processOrder } from '../../utilities/databaseManager';
+import { useState } from 'react';
 
 const Ship = () => {
     const { register, handleSubmit, errors } = useForm();
+    const [shipInfo, setShipInfo] = useState(null);
     const auth = useAuth();
 
     const stripePromise = loadStripe('pk_test_pS06V8JIFXeKVNV03PxEcd3Y00uNbBWVhq');
@@ -31,16 +33,17 @@ const Ship = () => {
     
     .then(res=>res.json())
     .then(order=>{
-      console.log('order placed', order)
-      alert('Successfully placed order with order Id' + order._id)
-      processOrder();
+      setShipInfo(true);
+      // console.log('order placed', order)
+      // alert('Successfully placed order with order Id' + order._id)
+      // processOrder();
     })
   }
     return (
   
       <div className="container">
         <div className="row">
-          <div className="col-md-6">
+          <div style={{display : shipInfo && 'none'}} className="col-md-6">
             <h3>Shipment Information</h3>
           <form  className="ship-form" onSubmit={handleSubmit(onSubmit)}>
         <input name="name" defaultValue={auth.user.name} ref={register({ required: true })} placeholder="Your Name" />
@@ -59,7 +62,7 @@ const Ship = () => {
         <input type="submit" />
       </form>
           </div>
-          <div className="col-md-6">
+          <div style={{display : shipInfo ? 'block' : 'none'}} className="col-md-6">
           <h3>Payment Information</h3>
             <Elements stripe={stripePromise}>
            <CheckoutForm></CheckoutForm>
