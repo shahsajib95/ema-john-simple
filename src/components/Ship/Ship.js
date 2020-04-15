@@ -11,34 +11,48 @@ import { useState } from 'react';
 const Ship = () => {
     const { register, handleSubmit, errors } = useForm();
     const [shipInfo, setShipInfo] = useState(null);
+    const [orderId, setOrderId] = useState(null);
+
     const auth = useAuth();
 
     const stripePromise = loadStripe('pk_test_pS06V8JIFXeKVNV03PxEcd3Y00uNbBWVhq');
 
     const onSubmit = data => { 
-      // TODO: move this after payment
-      console.log(auth.user.email);
-      const savedCart = getDatabaseCart();
-      const orderDetails = {
-        email: auth.user.email, 
-        cart:savedCart,
-        ship:data,
-      }
-      fetch('http://localhost:4200/placeOrder',{ method: 'POST', // *GET, POST, PUT, DELETE, etc.
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(orderDetails) // body data type must match "Content-Type" header
-    })
-    
-    .then(res=>res.json())
-    .then(order=>{
-      setShipInfo(true);
+  
+      setShipInfo(data );
       // console.log('order placed', order)
       // alert('Successfully placed order with order Id' + order._id)
       // processOrder();
-    })
   }
+  const handlePlaceOrder  = (payment) =>{
+    // TODO: move this after payment
+    const savedCart = getDatabaseCart();
+    const orderDetails = {
+      email: auth.user.email, 
+      cart: savedCart,
+      ship: shipInfo,
+      payment : payment
+    };
+    fetch('http://localhost:4200/placeOrder',{
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderDetails) // body data type must match "Content-Type" header
+  })
+  
+  .then(res=>res.json())
+  .then(order=>{
+    //clear LocalStorage cart
+    setOrderId(order._id)
+    processOrder();
+
+    //give thanks to user
+
+
+  })
+  }
+ 
     return (
   
       <div className="container">
@@ -65,8 +79,16 @@ const Ship = () => {
           <div style={{display: shipInfo ? 'block' : 'none'}}className="col-md-6">
           <h3>Payment Information</h3>
             <Elements stripe={stripePromise}>
-           <CheckoutForm></CheckoutForm>
+           <CheckoutForm handlePlaceOrder={handlePlaceOrder}></CheckoutForm>
            </Elements>
+           <br/>
+      {
+        orderId && 
+        <div>
+        <h3>Thanks For Shopping</h3>
+        <p>Your order ID is: {orderId} </p>
+        </div>
+      }
           </div>
         </div>
       </div>
