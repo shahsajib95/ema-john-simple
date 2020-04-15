@@ -7,8 +7,8 @@ import {
 import { useState } from 'react';
 
 const CheckoutForm = () => {
-  const [payError, setPayError ] = useState(null);
-  const [payMethod, setPayMethod] = useState(null);
+  const [cardError, setCardError ] = useState(null);
+  const [cardMethod, setCardMethod] = useState(null);
   const stripe = useStripe();
   const elements = useElements();
 
@@ -19,12 +19,12 @@ const CheckoutForm = () => {
       card: elements.getElement(CardElement),
     });
     if(error){
-      setPayError (error.message);
-      setPayMethod(null);
+      setCardError (error.message);
+      setCardMethod(null);
     }
     else{
-      setPayMethod(paymentMethod);
-      setPayError(null);
+      setCardMethod(paymentMethod);
+      setCardError(null);
     }
   };
 
@@ -35,10 +35,10 @@ const CheckoutForm = () => {
         Pay
       </button>
       {
-        payError && <p style={{color: 'red'}}>{payError}</p>
+        cardError && <p style={{color: 'red'}}>{cardError}</p>
       }
       {
-        payMethod && <p style={{color: 'green'}}>Payment Successful</p>
+        cardMethod && <p style={{color: 'green'}}>Payment Successful</p>
       }
     </form>
   );

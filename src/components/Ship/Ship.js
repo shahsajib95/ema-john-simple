@@ -43,7 +43,7 @@ const Ship = () => {
   
       <div className="container">
         <div className="row">
-          <div style={{display : shipInfo && 'none'}} className="col-md-6">
+          <div style={{display: shipInfo && 'none'}}className="col-md-6">
             <h3>Shipment Information</h3>
           <form  className="ship-form" onSubmit={handleSubmit(onSubmit)}>
         <input name="name" defaultValue={auth.user.name} ref={register({ required: true })} placeholder="Your Name" />
@@ -62,7 +62,7 @@ const Ship = () => {
         <input type="submit" />
       </form>
           </div>
-          <div style={{display : shipInfo ? 'block' : 'none'}} className="col-md-6">
+          <div style={{display: shipInfo ? 'block' : 'none'}}className="col-md-6">
           <h3>Payment Information</h3>
             <Elements stripe={stripePromise}>
            <CheckoutForm></CheckoutForm>
