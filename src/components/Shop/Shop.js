@@ -9,7 +9,7 @@ const Shop = () => {
     const[products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
     useEffect(()=>{
-        fetch('http://localhost:4200/products')
+        fetch('https://thawing-beyond-34551.herokuapp.com/products')
         .then(res => res.json()
         .then(data=>{
             setProducts(data);

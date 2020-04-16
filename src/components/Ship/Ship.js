@@ -33,7 +33,7 @@ const Ship = () => {
       ship: shipInfo,
       payment : payment
     };
-    fetch('http://localhost:4200/placeOrder',{
+    fetch('https://thawing-beyond-34551.herokuapp.com/placeOrder',{
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
     headers: {
       'Content-Type': 'application/json'
